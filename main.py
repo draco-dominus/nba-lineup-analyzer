@@ -7,28 +7,31 @@ from utils import get_empty_positions, print_lineup, choose_position
 
 def main():
 
-    lineup = {
-        "PG": None,
-        "SG": None,
-        "SF": None,
-        "PF": None,
-        "C": None
-    }
+    # lineup = {
+    #     "PG": None,
+    #     "SG": None,
+    #     "SF": None,
+    #     "PF": None,
+    #     "C": None
+    # }
 
-    while None in lineup.values():
+    # while None in lineup.values():
 
-        print_lineup(lineup)
+    #     print_lineup(lineup)
 
-        available_positions = get_empty_positions(lineup)
+    #     available_positions = get_empty_positions(lineup)
 
-        position = choose_position(available_positions)
+    #     position = choose_position(available_positions)
 
-        player_name = input("Enter player name: ")
+    #     player_name = input("Enter player name: ")
 
-        lineup[position] = player_name
+    #     lineup[position] = player_name
 
-    print("\nFinal Lineup:")
-    print_lineup(lineup)
+    # print("\nFinal Lineup:")
+    # print_lineup(lineup)
+
+    player = search_player("Stephen Curry")
+    print(player)
 
 
 if __name__ == "__main__":
