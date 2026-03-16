@@ -26,11 +26,13 @@ def search_player(name):
         return None
 
     return {
-        "id": player_id,
-        "name": player["full_name"],
-        "pts": round(latest_season["PTS"] / games_played, 1),
-        "ast": round(latest_season["AST"] / games_played, 1),
-        "reb": round(latest_season["REB"] / games_played, 1),
-        "stl": round(latest_season["STL"] / games_played, 1),
-        "blk": round(latest_season["BLK"] / games_played, 1)
-    }
+    "id": player_id,
+    "name": player["full_name"],
+    "pts": round(latest_season["PTS"] / games_played, 1),
+    "ast": round(latest_season["AST"] / games_played, 1),
+    "reb": round(latest_season["REB"] / games_played, 1),
+    "stl": round(latest_season["STL"] / games_played, 1),
+    "blk": round(latest_season["BLK"] / games_played, 1),
+    "fg3m": round(latest_season["FG3M"] / games_played, 1),
+    "fg3_pct": round(latest_season["FG3_PCT"], 3)
+}

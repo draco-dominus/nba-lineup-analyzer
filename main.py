@@ -116,9 +116,29 @@ def main():
 
         print("\nLineup Comparison")
         print("-----------------")
-        print("Lineup A Score:", result["lineup_a_score"])
-        print("Lineup B Score:", result["lineup_b_score"])
-        print("Winner:", result["winner"])
+
+        print("\nOffense")
+        print("Lineup A:", result["lineup_a_offense"])
+        print("Lineup B:", result["lineup_b_offense"])
+        print("Advantage:", result["offense_advantage"])
+
+        print("\nDefense")
+        print("Lineup A:", result["lineup_a_defense"])
+        print("Lineup B:", result["lineup_b_defense"])
+        print("Advantage:", result["defense_advantage"])
+
+        print("\nOverall Score")
+        print("Lineup A:", result["lineup_a_score"])
+        print("Lineup B:", result["lineup_b_score"])
+
+        print("\nWinner:", result["winner"])
+
+        print("\nKey Advantage")
+        print("-------------")
+        if result["key_area"] == "Balanced":
+            print("No clear biggest gap")
+        else:
+            print(f'{result["key_team"]} {result["key_area"]} +{result["key_gap"]}')
 
     else:
         print("Invalid option. Please restart and choose 1 or 2.")

@@ -43,3 +43,18 @@ def choose_position(available_positions):
             return user_choice
         else:
             print("Invalid position. Please choose from the available positions.")
+
+
+def search_players(query):
+
+    results = players.find_players_by_full_name(query)
+
+    player_list = []
+
+    for p in results[:5]:
+        player_list.append({
+            "id": p["id"],
+            "name": p["full_name"]
+        })
+
+    return player_list

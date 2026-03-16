@@ -80,7 +80,20 @@ def analyze_strengths_weaknesses(lineup):
     if defense["blocks"] < 3:
         weaknesses.append("Limited rim protection")
 
-    # NEW: Lineup identity classification
+    # Spacing evaluation
+    spacing_shooters = 0
+
+    for player in lineup.values():
+        if player["fg3_pct"] >= 0.35 and player["fg3m"] >= 1.5:
+            spacing_shooters += 1
+
+    if spacing_shooters >= 4:
+        strengths.append("Excellent spacing")
+
+    elif spacing_shooters <= 1:
+        weaknesses.append("Poor floor spacing")
+
+     # Lineup identity classification
     lineup_identity = "Balanced lineup"
 
     if offense["offense_score"] - defense["defense_score"] > 30:
@@ -98,21 +111,72 @@ def analyze_strengths_weaknesses(lineup):
 
 def compare_lineups(lineup_a, lineup_b):
 
+    offense_a = calculate_offense_score(lineup_a)
+    offense_b = calculate_offense_score(lineup_b)
+
+    defense_a = calculate_defense_score(lineup_a)
+    defense_b = calculate_defense_score(lineup_b)
+
     overall_a = calculate_overall_score(lineup_a)
     overall_b = calculate_overall_score(lineup_b)
 
-    score_a = overall_a["overall_score"]
-    score_b = overall_b["overall_score"]
+    offense_score_a = offense_a["offense_score"]
+    offense_score_b = offense_b["offense_score"]
 
-    if score_a > score_b:
+    defense_score_a = defense_a["defense_score"]
+    defense_score_b = defense_b["defense_score"]
+
+    overall_score_a = overall_a["overall_score"]
+    overall_score_b = overall_b["overall_score"]
+
+    if offense_score_a > offense_score_b:
+        offense_advantage = "Lineup A"
+    elif offense_score_b > offense_score_a:
+        offense_advantage = "Lineup B"
+    else:
+        offense_advantage = "Tie"
+
+    if defense_score_a > defense_score_b:
+        defense_advantage = "Lineup A"
+    elif defense_score_b > defense_score_a:
+        defense_advantage = "Lineup B"
+    else:
+        defense_advantage = "Tie"
+
+    if overall_score_a > overall_score_b:
         winner = "Lineup A"
-    elif score_b > score_a:
+    elif overall_score_b > overall_score_a:
         winner = "Lineup B"
     else:
         winner = "Tie"
 
+    offense_gap = round(abs(offense_score_a - offense_score_b), 1)
+    defense_gap = round(abs(defense_score_a - defense_score_b), 1)
+
+    if offense_gap > defense_gap:
+        key_area = "Offense"
+        key_gap = offense_gap
+        key_team = offense_advantage
+    elif defense_gap > offense_gap:
+        key_area = "Defense"
+        key_gap = defense_gap
+        key_team = defense_advantage
+    else:
+        key_area = "Balanced"
+        key_gap = offense_gap
+        key_team = "Neither"
+
     return {
-        "lineup_a_score": score_a,
-        "lineup_b_score": score_b,
-        "winner": winner
+        "lineup_a_offense": offense_score_a,
+        "lineup_b_offense": offense_score_b,
+        "lineup_a_defense": defense_score_a,
+        "lineup_b_defense": defense_score_b,
+        "lineup_a_score": overall_score_a,
+        "lineup_b_score": overall_score_b,
+        "offense_advantage": offense_advantage,
+        "defense_advantage": defense_advantage,
+        "winner": winner,
+        "key_area": key_area,
+        "key_gap": key_gap,
+        "key_team": key_team
     }
