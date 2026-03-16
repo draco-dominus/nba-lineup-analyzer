@@ -58,3 +58,19 @@ def search_players(query):
         })
 
     return player_list
+
+
+def print_player_stats(player):
+
+    print("\nPlayer Stats")
+    print("------------")
+
+    print("Name:", player["name"])
+    print("Points per game:", player["pts"])
+    print("Assists per game:", player["ast"])
+    print("Rebounds per game:", player["reb"])
+    print("Steals per game:", player["stl"])
+    print("Blocks per game:", player["blk"])
+
+    print("3PT Made per game:", player["fg3m"])
+    print("3PT Percentage:", player["fg3_pct"])

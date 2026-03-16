@@ -1,5 +1,5 @@
 from api import search_player
-from utils import get_empty_positions, print_lineup
+from utils import get_empty_positions, print_lineup, print_player_stats
 from analysis import (
     calculate_offense_score,
     calculate_defense_score,
@@ -96,16 +96,28 @@ def main():
 
     print("NBA Lineup Analyzer")
     print("-------------------")
-    print("1. Analyze one lineup")
-    print("2. Compare two lineups")
+    print("1. Look up a player")
+    print("2. Analyze one lineup")
+    print("3. Compare two lineups")
 
     choice = input("Choose an option: ")
 
     if choice == "1":
+
+        name = input("Enter player name: ")
+
+        player = search_player(name)
+
+        if player is None:
+            print("Player not found.")
+        else:
+            print_player_stats(player)
+
+    elif choice == "2":
         lineup = build_lineup()
         analyze_single_lineup(lineup)
 
-    elif choice == "2":
+    elif choice == "3":
         print("\nBuild Lineup A")
         lineup_a = build_lineup()
 
@@ -127,12 +139,6 @@ def main():
         print("Lineup B:", result["lineup_b_defense"])
         print("Advantage:", result["defense_advantage"])
 
-        print("\nOverall Score")
-        print("Lineup A:", result["lineup_a_score"])
-        print("Lineup B:", result["lineup_b_score"])
-
-        print("\nWinner:", result["winner"])
-
         print("\nKey Advantage")
         print("-------------")
         if result["key_area"] == "Balanced":
@@ -140,8 +146,14 @@ def main():
         else:
             print(f'{result["key_team"]} {result["key_area"]} +{result["key_gap"]}')
 
+        print("\nOverall Score")
+        print("Lineup A:", result["lineup_a_score"])
+        print("Lineup B:", result["lineup_b_score"])
+
+        print("\nWinner:", result["winner"])
+
     else:
-        print("Invalid option. Please restart and choose 1 or 2.")
+        print("Invalid option. Please restart and choose 1, 2, or 3.")
 
 
 if __name__ == "__main__":
