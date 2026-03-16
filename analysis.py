@@ -47,3 +47,72 @@ def calculate_overall_score(lineup):
     return {
         "overall_score": round(overall_score, 1)
     }
+
+
+def analyze_strengths_weaknesses(lineup):
+
+    offense = calculate_offense_score(lineup)
+    defense = calculate_defense_score(lineup)
+
+    strengths = []
+    weaknesses = []
+
+    # Offensive evaluation
+    if offense["offense_score"] > 120:
+        strengths.append("Strong scoring lineup")
+
+    if offense["assists"] > 25:
+        strengths.append("Good playmaking")
+
+    if offense["offense_score"] < 100:
+        weaknesses.append("Limited offensive production")
+
+    # Defensive evaluation
+    if defense["defense_score"] > 80:
+        strengths.append("Strong defensive presence")
+
+    if defense["defense_score"] < 70:
+        weaknesses.append("Weak overall defense")
+
+    if defense["rebounds"] < 32:
+        weaknesses.append("Below-average rebounding")
+
+    if defense["blocks"] < 3:
+        weaknesses.append("Limited rim protection")
+
+    # NEW: Lineup identity classification
+    lineup_identity = "Balanced lineup"
+
+    if offense["offense_score"] - defense["defense_score"] > 30:
+        lineup_identity = "Offensive-heavy lineup"
+
+    elif defense["defense_score"] - offense["offense_score"] > 30:
+        lineup_identity = "Defensive lineup"
+
+    return {
+        "strengths": strengths,
+        "weaknesses": weaknesses,
+        "identity": lineup_identity
+    }
+
+
+def compare_lineups(lineup_a, lineup_b):
+
+    overall_a = calculate_overall_score(lineup_a)
+    overall_b = calculate_overall_score(lineup_b)
+
+    score_a = overall_a["overall_score"]
+    score_b = overall_b["overall_score"]
+
+    if score_a > score_b:
+        winner = "Lineup A"
+    elif score_b > score_a:
+        winner = "Lineup B"
+    else:
+        winner = "Tie"
+
+    return {
+        "lineup_a_score": score_a,
+        "lineup_b_score": score_b,
+        "winner": winner
+    }
