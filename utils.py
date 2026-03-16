@@ -26,7 +26,7 @@ def print_lineup(lineup):
         if player is None:
             print(f"{position}: Empty")
         else:
-            print(f"{position}: {player}")
+            print(f"{position}: {player['name']}")
 
 
 # Ask the user to choose a position from the available ones
