@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from api import search_player
+from api import search_player, search_players
 
 app = Flask(__name__)
 CORS(app)
@@ -18,6 +18,17 @@ def get_player():
         return jsonify({"error": "Player not found"}), 404
 
     return jsonify(player)
+
+
+@app.route("/players", methods=["GET"])
+def get_players():
+    query = request.args.get("search")
+
+    if not query:
+        return jsonify([])
+
+    results = search_players(query)
+    return jsonify(results)
 
 
 if __name__ == "__main__":

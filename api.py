@@ -36,3 +36,29 @@ def search_player(name):
     "fg3m": round(latest_season["FG3M"] / games_played, 1),
     "fg3_pct": round(latest_season["FG3_PCT"], 3)
 }
+
+
+def search_players(query):
+    results = players.find_players_by_full_name(query)
+
+    filtered = []
+
+    query_lower = query.lower()
+
+    for p in results:
+        name_lower = p["full_name"].lower()
+
+        if not p["is_active"]:
+            continue
+
+        if query_lower not in name_lower:
+            continue
+
+        filtered.append({
+            "id": p["id"],
+            "name": p["full_name"]
+        })
+
+    filtered.sort(key=lambda p: p["name"].lower().startswith(query_lower), reverse=True)
+
+    return filtered[:5]

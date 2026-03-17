@@ -72,3 +72,36 @@ body {
   color: #cbd5e1;
   font-size: 16px;
 }
+
+.player-search {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.player-search input {
+  padding: 8px;
+  font-size: 14px;
+  width: 250px;
+}
+
+.player-search button {
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.suggestions {
+  background: #111;
+  border: 1px solid #333;
+  width: 250px;
+  margin-top: 4px;
+}
+
+.suggestion-item {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background: #222;
+}
