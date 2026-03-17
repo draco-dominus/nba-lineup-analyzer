@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import PlayerCard from "./components/PlayerCard";
 
 function App() {
   const [activePage, setActivePage] = useState("player");
@@ -117,21 +118,7 @@ function App() {
 
               {!error && !playerData && <p>No player selected.</p>}
 
-              {playerData && (
-                <div>
-                  <h2>{playerData.name}</h2>
-                  <p>Points per game: {playerData.pts}</p>
-                  <p>Assists per game: {playerData.ast}</p>
-                  <p>Rebounds per game: {playerData.reb}</p>
-                  <p>Steals per game: {playerData.stl}</p>
-                  <p>Blocks per game: {playerData.blk}</p>
-                  <p>3PT Made per game: {playerData.fg3m}</p>
-                  <p>3PT Percentage: {playerData.fg3_pct}</p>
-                </div>
-              )}
-            </div>
-          </section>
-        )}
+              {playerData && <PlayerCard player={playerData} />}
 
         {activePage === "lineup" && (
           <section className="page-section">

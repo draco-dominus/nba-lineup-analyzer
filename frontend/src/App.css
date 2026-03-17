@@ -105,3 +105,57 @@ body {
 .suggestion-item:hover {
   background: #222;
 }
+
+.player-card {
+  margin-top: 20px;
+  background: #10141d;
+  border: 1px solid #2a3140;
+  padding: 24px;
+}
+
+.player-card-header {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #2a3140;
+  padding-bottom: 14px;
+}
+
+.player-card-header h2 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  color: #f3f4f6;
+}
+
+.player-card-header p {
+  margin: 6px 0 0 0;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.player-card-stats {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+
+.stat-box {
+  background: #0b0f17;
+  border: 1px solid #232a36;
+  padding: 16px 12px;
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: #f9fafb;
+}
