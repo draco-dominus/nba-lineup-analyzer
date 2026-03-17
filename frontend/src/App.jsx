@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./App.css";
-import PlayerCard from "./components/PlayerCard";
+import PlayerCard from "./NBACard";
 
 function App() {
   const [activePage, setActivePage] = useState("player");
@@ -26,8 +26,30 @@ function App() {
       }
 
       setPlayerData(data);
+      setSuggestions([]);
     } catch (err) {
       setError("Could not connect to backend");
+    }
+  };
+
+  const handleInputChange = async (e) => {
+    const value = e.target.value;
+    setPlayerName(value);
+
+    if (value.length < 3) {
+      setSuggestions([]);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:5000/players?search=${encodeURIComponent(value)}`
+      );
+
+      const data = await response.json();
+      setSuggestions(data);
+    } catch {
+      setSuggestions([]);
     }
   };
 
@@ -71,28 +93,8 @@ function App() {
                 type="text"
                 placeholder="Enter player name..."
                 value={playerName}
-                onChange={async (e) => {
-                  const value = e.target.value;
-                  setPlayerName(value);
-
-                  if (value.length < 3) {
-                    setSuggestions([]);
-                    return;
-                  }
-
-                  try {
-                    const response = await fetch(
-                      `http://127.0.0.1:5000/players?search=${encodeURIComponent(value)}`
-                    );
-
-                    const data = await response.json();
-                    setSuggestions(data);
-                  } catch {
-                    setSuggestions([]);
-                  }
-                }}
+                onChange={handleInputChange}
               />
-
               <button onClick={handlePlayerSearch}>Search</button>
             </div>
 
@@ -119,6 +121,9 @@ function App() {
               {!error && !playerData && <p>No player selected.</p>}
 
               {playerData && <PlayerCard player={playerData} />}
+            </div>
+          </section>
+        )}
 
         {activePage === "lineup" && (
           <section className="page-section">
