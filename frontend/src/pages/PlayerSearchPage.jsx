@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NBACard from "../NBACard";
 
 function PlayerSearchPage() {
@@ -7,28 +7,48 @@ function PlayerSearchPage() {
   const [error, setError] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
-  const handlePlayerSearch = async () => {
-    try {
-      setError("");
-      setPlayerData(null);
+  const [allPlayers, setAllPlayers] = useState([]);
 
-      const response = await fetch(
-        `http://127.0.0.1:5000/player?name=${encodeURIComponent(playerName)}`
-      );
+    useEffect(() => {
+    const fetchAllPlayers = async () => {
+        try {
+        const response = await fetch("http://127.0.0.1:5050/players/all");
+        const data = await response.json();
+        setAllPlayers(data);
+        } catch {
+        console.error("Failed to load players");
+        }
+    };
 
-      const data = await response.json();
+  fetchAllPlayers();
+}, []);
 
-      if (!response.ok) {
-        setError(data.error || "Something went wrong");
-        return;
-      }
+  const fetchPlayer = async (name) => {
+  try {
+    setError("");
+    setPlayerData(null);
 
-      setPlayerData(data);
-      setSuggestions([]);
-    } catch {
-      setError("Could not connect to backend");
+    const response = await fetch(
+      `http://127.0.0.1:5050/player?name=${encodeURIComponent(name)}`
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      setError(data.error || "Something went wrong");
+      return;
     }
-  };
+
+    setPlayerData(data);
+    setSuggestions([]);
+  } catch {
+    setError("Could not connect to backend");
+  }
+};
+  
+  const handlePlayerSearch = async () => {
+  fetchPlayer(playerName);
+};
 
   const handlePlayerInputChange = async (e) => {
     const value = e.target.value;
@@ -41,7 +61,7 @@ function PlayerSearchPage() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/players?search=${encodeURIComponent(value)}`
+        `http://127.0.0.1:5050/players?search=${encodeURIComponent(value)}`
       );
 
       const data = await response.json();
@@ -66,22 +86,56 @@ function PlayerSearchPage() {
         <button onClick={handlePlayerSearch}>Search</button>
       </div>
 
+      <div className="player-browser">
+  <h3>All Players</h3>
+
+  <div className="player-list">
+    {allPlayers.slice(0, 50).map((p) => {
+      const imageUrl = `https://cdn.nba.com/headshots/nba/latest/1040x760/${p.id}.png`;
+
+      return (
+        <div
+          key={p.id}
+          className="player-list-item"
+          onClick={() => fetchPlayer(p.name)}
+        >
+          <img src={imageUrl} alt={p.name} />
+          <span>{p.name}</span>
+        </div>
+      );
+    })}
+  </div>
+</div>
+
       {suggestions.length > 0 && (
         <div className="suggestions">
-          {suggestions.map((p) => (
-            <div
-              key={p.id}
-              className="suggestion-item"
-              onClick={() => {
+            {suggestions.map((p) => {
+            const imageUrl = `https://cdn.nba.com/headshots/nba/latest/1040x760/${p.id}.png`;
+
+            return (
+                <div
+                key={p.id}
+                className="suggestion-item suggestion-player-row"
+                onClick={() => {
                 setPlayerName(p.name);
                 setSuggestions([]);
-              }}
-            >
-              {p.name}
-            </div>
-          ))}
+                fetchPlayer(p.name);
+                }}
+                >
+                <img
+                    src={imageUrl}
+                    alt={p.name}
+                    className="suggestion-headshot"
+                />
+
+                <div className="suggestion-player-info">
+                    <div className="suggestion-player-name">{p.name}</div>
+                </div>
+                </div>
+            );
+            })}
         </div>
-      )}
+        )}
 
       <div className="player-results">
         {error && <p>{error}</p>}

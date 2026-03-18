@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from api import search_player, search_players
+from api import search_player, search_players, get_top_players
 from analysis import analyze_lineup, compare_lineups
 
 app = Flask(__name__)
@@ -20,15 +20,10 @@ def get_player():
 
     return jsonify(player)
 
-@app.route("/players", methods=["GET"])
-def get_players():
-    query = request.args.get("search")
-
-    if not query:
-        return jsonify([])
-
-    results = search_players(query)
-    return jsonify(results)
+@app.route("/players/all", methods=["GET"])
+def get_all_players_route():
+    players_list = get_top_players(limit=50)
+    return jsonify(players_list)
 
 @app.route("/analyze-lineup", methods=["POST"])
 def analyze_lineup_route():
@@ -55,5 +50,11 @@ def compare_lineups_route():
     result = compare_lineups(lineup_a, lineup_b)
     return jsonify(result)
 
+
+@app.route("/players/all", methods=["GET"])
+def get_all_players():
+    players_list = get_all_active_players()
+    return jsonify(players_list)
+
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5050)

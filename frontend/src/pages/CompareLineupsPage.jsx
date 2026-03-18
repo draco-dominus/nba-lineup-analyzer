@@ -53,7 +53,7 @@ function CompareLineupsPage() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/players?search=${encodeURIComponent(value)}`
+        `http://127.0.0.1:5050/players?search=${encodeURIComponent(value)}`
       );
 
       const data = await response.json();
@@ -66,7 +66,7 @@ function CompareLineupsPage() {
   const handleSelectComparePlayer = async (side, position, playerName) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/player?name=${encodeURIComponent(playerName)}`
+        `http://127.0.0.1:5050/player?name=${encodeURIComponent(playerName)}`
       );
 
       const data = await response.json();

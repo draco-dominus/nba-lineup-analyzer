@@ -506,7 +506,6 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 
 import HomePage from "./pages/HomePage";
-import PlayersPage from "./pages/PlayersPage";
 import PlayerSearchPage from "./pages/PlayerSearchPage";
 import ComparePlayersPage from "./pages/ComparePlayersPage";
 import LineupAnalyzePage from "./pages/LineupAnalyzePage";
