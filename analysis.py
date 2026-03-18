@@ -180,3 +180,17 @@ def compare_lineups(lineup_a, lineup_b):
         "key_gap": key_gap,
         "key_team": key_team
     }
+
+
+def analyze_lineup(lineup):
+    offense = calculate_offense_score(lineup)
+    defense = calculate_defense_score(lineup)
+    overall = calculate_overall_score(lineup)
+    insights = analyze_strengths_weaknesses(lineup)
+
+    return {
+        "offense": offense,
+        "defense": defense,
+        "overall": overall,
+        "insights": insights
+    }
