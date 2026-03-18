@@ -68,7 +68,7 @@ def get_top_players(limit=50, season="2024-25"):
 
     df = stats.get_data_frames()[0]
 
-    # Keep only active players and sort by points per game
+    # Sort by points per game
     df = df.sort_values("PTS", ascending=False).head(limit)
 
     players_list = []
@@ -78,6 +78,7 @@ def get_top_players(limit=50, season="2024-25"):
             "id": int(row["PLAYER_ID"]),
             "name": row["PLAYER_NAME"],
             "team": row["TEAM_ABBREVIATION"],
+            "position": "",
             "pts": round(float(row["PTS"]), 1),
             "reb": round(float(row["REB"]), 1),
             "ast": round(float(row["AST"]), 1),

@@ -381,3 +381,46 @@ body {
   height: 36px;
   border-radius: 50%;
 }
+
+.player-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.player-card-mini {
+  background: #111;
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.player-card-mini:hover {
+  transform: translateY(-4px);
+  background: #1a1a1a;
+}
+
+.player-card-mini img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.player-mini-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.player-mini-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.player-mini-meta {
+  font-size: 12px;
+  color: #aaa;
+}
