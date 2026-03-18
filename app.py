@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from api import search_player, search_players
-from analysis import analyze_lineup
+from analysis import analyze_lineup, compare_lineups
 
 app = Flask(__name__)
 CORS(app)
@@ -40,6 +40,19 @@ def analyze_lineup_route():
     lineup = data["lineup"]
     result = analyze_lineup(lineup)
 
+    return jsonify(result)
+
+@app.route("/compare-lineups", methods=["POST"])
+def compare_lineups_route():
+    data = request.get_json()
+
+    if not data or "lineup_a" not in data or "lineup_b" not in data:
+        return jsonify({"error": "Missing lineup data"}), 400
+
+    lineup_a = data["lineup_a"]
+    lineup_b = data["lineup_b"]
+
+    result = compare_lineups(lineup_a, lineup_b)
     return jsonify(result)
 
 if __name__ == "__main__":

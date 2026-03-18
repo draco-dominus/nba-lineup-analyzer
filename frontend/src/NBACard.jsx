@@ -1,6 +1,14 @@
 function PlayerCard({ player }) {
+  const imageUrl = `https://cdn.nba.com/headshots/nba/latest/1040x760/${player.id}.png`;
+
   return (
     <div className="player-card">
+      <img
+        src={imageUrl}
+        alt={player.name}
+        className="player-headshot"
+      />
+
       <div className="player-card-header">
         <h2>{player.name}</h2>
         <p>Current Season Stats</p>
@@ -36,7 +44,7 @@ function PlayerCard({ player }) {
           <span className="stat-label">3PT%</span>
           <span className="stat-value">
             {player.fg3_pct ? (player.fg3_pct * 100).toFixed(1) + "%" : "—"}
-            </span>
+          </span>
         </div>
       </div>
     </div>

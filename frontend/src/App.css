@@ -261,3 +261,66 @@ body {
   font-weight: 500;
   color: #60a5fa;
 }
+
+.player-headshot {
+  width: 140px;
+  max-width: 100%;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  display: block;
+}
+
+.compare-layout-two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-top: 24px;
+}
+
+.compare-column h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.compare-slot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.compare-slot-card {
+  background: #10141d;
+  border: 1px solid #2a3140;
+  padding: 16px;
+  position: relative;
+}
+
+.compare-slot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.compare-slot-input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.compare-slot-player-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f3f4f6;
+}
+
+.compare-suggestions {
+  width: 100%;
+  margin-top: 10px;
+}
+
+@media (max-width: 1000px) {
+  .compare-layout-two-column {
+    grid-template-columns: 1fr;
+  }
+}
