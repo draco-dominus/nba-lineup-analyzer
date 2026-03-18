@@ -10,6 +10,7 @@ function App() {
   const [suggestions, setSuggestions] = useState([]);
   const [lineupAnalysis, setLineupAnalysis] = useState(null);
   const [lineupError, setLineupError] = useState("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const [lineup, setLineup] = useState({
     PG: null,
@@ -72,31 +73,31 @@ function App() {
     setLineupError("");
     setLineupAnalysis(null);
 
-    const hasEmptySlot = Object.values(lineup).some((player) => player === null);
+    const hasEmptySlot = Object.values(lineup).some((p) => p === null);
 
     if (hasEmptySlot) {
       setLineupError("Please fill all five positions before analyzing.");
       return;
     }
 
+    setIsAnalyzing(true);
+
     const response = await fetch("http://127.0.0.1:5000/analyze-lineup", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({ lineup }),
+      body: JSON.stringify({ lineup })
     });
 
     const data = await response.json();
 
-    if (!response.ok) {
-      setLineupError(data.error || "Something went wrong");
-      return;
-    }
-
     setLineupAnalysis(data);
+
   } catch {
     setLineupError("Could not connect to backend");
+  } finally {
+    setIsAnalyzing(false);
   }
 };
 
@@ -287,63 +288,46 @@ function App() {
                   Analyze Lineup
                 </button>
 
-                {lineupError && <p>{lineupError}</p>}
+                {lineupError && <p className="lineup-error">{lineupError}</p>}
 
+                {isAnalyzing && <p className="analysis-loading">Analyzing lineup...</p>}
+                
                 {lineupAnalysis && (
-                  <div className="lineup-analysis-results">
-                    <h2>Lineup Analysis</h2>
+                <div className="analysis-panel">
+                  <h2>Lineup Analysis</h2>
 
-                    <div className="analysis-grid">
-                      <div className="analysis-box">
-                        <span className="analysis-label">Offense</span>
-                        <span className="analysis-value">
-                          {lineupAnalysis.offense.offense_score}
-                        </span>
-                      </div>
-
-                      <div className="analysis-box">
-                        <span className="analysis-label">Defense</span>
-                        <span className="analysis-value">
-                          {lineupAnalysis.defense.defense_score}
-                        </span>
-                      </div>
-
-                      <div className="analysis-box">
-                        <span className="analysis-label">Overall</span>
-                        <span className="analysis-value">
-                          {lineupAnalysis.overall.overall_score}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="lineup-insights">
-                      <h3>Identity</h3>
-                      <p>{lineupAnalysis.insights.identity}</p>
-
-                      <h3>Strengths</h3>
-                      {lineupAnalysis.insights.strengths.length > 0 ? (
-                        <ul>
-                          {lineupAnalysis.insights.strengths.map((item, index) => (
-                            <li key={index}>{item}</li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p>No major strengths detected.</p>
-                      )}
-
-                      <h3>Weaknesses</h3>
-                      {lineupAnalysis.insights.weaknesses.length > 0 ? (
-                        <ul>
-                          {lineupAnalysis.insights.weaknesses.map((item, index) => (
-                            <li key={index}>{item}</li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p>No major weaknesses detected.</p>
-                      )}
-                    </div>
+                  <div className="analysis-scores">
+                    <p>Offense: {lineupAnalysis.offense.offense_score}</p>
+                    <p>Defense: {lineupAnalysis.defense.defense_score}</p>
+                    <p>Overall: {lineupAnalysis.overall.overall_score}</p>
                   </div>
-                )}
+
+                  <h3>Identity</h3>
+                  <p>{lineupAnalysis.insights.identity}</p>
+
+                  <h3>Strengths</h3>
+                  {lineupAnalysis.insights.strengths.length > 0 ? (
+                    <ul>
+                      {lineupAnalysis.insights.strengths.map((s, i) => (
+                        <li key={i}>{s}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No major strengths detected.</p>
+                  )}
+
+                  <h3>Weaknesses</h3>
+                  {lineupAnalysis.insights.weaknesses.length > 0 ? (
+                    <ul>
+                      {lineupAnalysis.insights.weaknesses.map((w, i) => (
+                        <li key={i}>{w}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No major weaknesses detected.</p>
+                  )}
+                </div>
+              )}
 
                 <div className="lineup-preview">
                   {lineup[activeSlot] ? (
