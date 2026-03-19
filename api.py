@@ -59,32 +59,23 @@ def search_players(query):
 
     return filtered[:5]
 
-def get_top_players(limit=50, season="2024-25"):
-    stats = leaguedashplayerstats.LeagueDashPlayerStats(
-        season=season,
-        season_type_all_star="Regular Season",
-        per_mode_detailed="PerGame"
-    )
+def get_top_players(limit=12, season="2024-25"):
+    featured_players = [
+        {"id": 1628983, "name": "Shai Gilgeous-Alexander", "team": "OKC", "position": "G", "pts": 32.7, "reb": 5.0, "ast": 6.4},
+        {"id": 1641705, "name": "Victor Wembanyama", "team": "SAS", "position": "C", "pts": 24.3, "reb": 11.0, "ast": 3.7},
+        {"id": 203999, "name": "Nikola Jokic", "team": "DEN", "position": "C", "pts": 29.6, "reb": 12.7, "ast": 10.2},
+        {"id": 1629029, "name": "Luka Doncic", "team": "LAL", "position": "G", "pts": 28.2, "reb": 8.2, "ast": 7.7},
+        {"id": 1630595, "name": "Cade Cunningham", "team": "DET", "position": "G", "pts": 25.7, "reb": 6.1, "ast": 9.2},
+        {"id": 1630162, "name": "Anthony Edwards", "team": "MIN", "position": "G", "pts": 27.6, "reb": 5.7, "ast": 4.5},
+        {"id": 203507, "name": "Giannis Antetokounmpo", "team": "MIL", "position": "F", "pts": 30.4, "reb": 11.9, "ast": 6.5},
+        {"id": 1628369, "name": "Jayson Tatum", "team": "BOS", "position": "F", "pts": 26.8, "reb": 8.7, "ast": 6.0},
+        {"id": 2544, "name": "LeBron James", "team": "LAL", "position": "F", "pts": 25.3, "reb": 7.1, "ast": 8.3},
+        {"id": 201939, "name": "Stephen Curry", "team": "GSW", "position": "G", "pts": 26.4, "reb": 4.5, "ast": 5.1},
+        {"id": 201142, "name": "Kevin Durant", "team": "HOU", "position": "F", "pts": 26.6, "reb": 6.0, "ast": 4.2},
+        {"id": 1628378, "name": "Donovan Mitchell", "team": "CLE", "position": "G", "pts": 26.1, "reb": 5.1, "ast": 6.1},
+    ]
 
-    df = stats.get_data_frames()[0]
-
-    # Sort by points per game
-    df = df.sort_values("PTS", ascending=False).head(limit)
-
-    players_list = []
-
-    for _, row in df.iterrows():
-        players_list.append({
-            "id": int(row["PLAYER_ID"]),
-            "name": row["PLAYER_NAME"],
-            "team": row["TEAM_ABBREVIATION"],
-            "position": "",
-            "pts": round(float(row["PTS"]), 1),
-            "reb": round(float(row["REB"]), 1),
-            "ast": round(float(row["AST"]), 1),
-        })
-
-    return players_list
+    return featured_players[:limit]
 
 
 from nba_api.stats.endpoints import commonplayerinfo
