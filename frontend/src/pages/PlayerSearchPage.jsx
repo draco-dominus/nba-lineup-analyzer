@@ -11,7 +11,7 @@ function PlayerSearchPage() {
   useEffect(() => {
     const fetchAllPlayers = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5050/players/all");
+        const response = await fetch("import.meta.env.VITE_API_URL/players/all");
         const data = await response.json();
         setAllPlayers(data);
       } catch {
@@ -28,7 +28,7 @@ function PlayerSearchPage() {
       setPlayerData(null);
 
       const response = await fetch(
-        `http://127.0.0.1:5050/player?name=${encodeURIComponent(name)}`
+        `import.meta.env.VITE_API_URL/player?name=${encodeURIComponent(name)}`
       );
 
       const data = await response.json();
@@ -60,7 +60,7 @@ function PlayerSearchPage() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:5050/players?search=${encodeURIComponent(value)}`
+        `import.meta.env.VITE_API_URL/players?search=${encodeURIComponent(value)}`
       );
 
       const data = await response.json();

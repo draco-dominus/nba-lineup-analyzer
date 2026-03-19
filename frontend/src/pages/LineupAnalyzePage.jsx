@@ -25,7 +25,7 @@ function LineupAnalyzePage() {
     setLineupAnalysis(null);
     setIsAnalyzing(true);
 
-    const response = await fetch("http://127.0.0.1:5050/analyze-lineup", {
+    const response = await fetch("import.meta.env.VITE_API_URL/analyze-lineup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -59,7 +59,7 @@ function LineupAnalyzePage() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:5050/players?search=${encodeURIComponent(value)}`
+        `import.meta.env.VITE_API_URL/players?search=${encodeURIComponent(value)}`
       );
 
       const data = await response.json();
@@ -72,7 +72,7 @@ function LineupAnalyzePage() {
   const handleSelectLineupPlayer = async (playerName) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5050/player?name=${encodeURIComponent(playerName)}`
+        `import.meta.env.VITE_API_URL/player?name=${encodeURIComponent(playerName)}`
       );
 
       const data = await response.json();
