@@ -56,5 +56,8 @@ def get_all_players():
     players_list = get_all_active_players()
     return jsonify(players_list)
 
+import os
+
 if __name__ == "__main__":
-    app.run(debug=True, port=5050)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
