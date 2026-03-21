@@ -38,15 +38,15 @@ function PlayerSearchPage() {
       setPlayerData(null);
 
       const response = await fetch(
-        `import.meta.env.VITE_API_URL/player?name=${encodeURIComponent(name)}`
+        `${import.meta.env.VITE_API_URL}/player?name=${encodeURIComponent(name)}`
       );
 
-      let data;
+      let data = null;
 
       try {
         data = await response.json();
-      } catch {
-        throw new Error("Invalid JSON response from backend");
+      } catch (err) {
+        console.warn("JSON parse failed:", err);
       }
 
       if (!response.ok) {
@@ -54,8 +54,14 @@ function PlayerSearchPage() {
         return;
       }
 
+      if (!data) {
+        setError("No data returned");
+        return;
+      }
+
       setPlayerData(data);
       setSuggestions([]);
+
     } catch {
       setError("Could not connect to backend");
     }
