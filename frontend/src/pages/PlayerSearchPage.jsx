@@ -9,18 +9,28 @@ function PlayerSearchPage() {
   const [allPlayers, setAllPlayers] = useState([]);
 
   useEffect(() => {
-    const fetchAllPlayers = async () => {
-      try {
-        const response = await fetch("import.meta.env.VITE_API_URL/players/all");
-        const data = await response.json();
-        setAllPlayers(data);
-      } catch {
-        console.error("Failed to load players");
-      }
-    };
+  const fetchAllPlayers = async () => {
+    try {
+      console.log("API URL:", import.meta.env.VITE_API_URL);
 
-    fetchAllPlayers();
-  }, []);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/players/all`);
+      console.log("players/all status:", response.status);
+
+      if (!response.ok) {
+        throw new Error(`players/all failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("players/all data:", data);
+
+      setAllPlayers(data);
+    } catch (err) {
+      console.error("Failed to load players:", err);
+    }
+  };
+
+  fetchAllPlayers();
+}, []);
 
   const fetchPlayer = async (name) => {
     try {
@@ -31,10 +41,16 @@ function PlayerSearchPage() {
         `import.meta.env.VITE_API_URL/player?name=${encodeURIComponent(name)}`
       );
 
-      const data = await response.json();
+      let data;
+
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error("Invalid JSON response from backend");
+      }
 
       if (!response.ok) {
-        setError(data.error || "Something went wrong");
+        setError(data?.error || "Something went wrong");
         return;
       }
 
