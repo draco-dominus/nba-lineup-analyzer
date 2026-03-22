@@ -505,14 +505,22 @@ a {
 
 .player-mini-card,
 .player-card-mini {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: linear-gradient(180deg, #101010 0%, #0d0d0d 100%);
-  border: 1px solid var(--border);
-  padding: 12px;
+  background: #0c0c0c;
+  border: 1px solid #1f1f1f;
+  border-radius: 6px;
+  padding: 16px 14px;
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 240px;
+  position: relative;
+}
+
+.player-card-mini:hover {
+  border-color: #f97316;
+  transform: translateY(-3px);
 }
 
 .player-mini-card:hover,
