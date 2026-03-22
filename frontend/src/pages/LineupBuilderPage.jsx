@@ -1,5 +1,4 @@
-import { useState } from "react";
-import PlayerMiniCard from "../components/PlayerMiniCard";
+import { useEffect, useState } from "react";
 
 function LineupBuilderPage() {
   const [lineup, setLineup] = useState({
@@ -10,227 +9,252 @@ function LineupBuilderPage() {
     C: null,
   });
 
+  const [activeSlot, setActiveSlot] = useState("PG");
+  const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
   const [analysis, setAnalysis] = useState(null);
   const [error, setError] = useState("");
-
-  const allPlayers = [
-  {
-    id: 2544,
-    name: "LeBron James",
-    position: "F",
-    pts: 25.3,
-    ast: 8.3,
-    reb: 7.1,
-    stl: 1.2,
-    blk: 0.6,
-    fg3_pct: 0.387,
-    fg3m: 2.1,
-  },
-  {
-    id: 201939,
-    name: "Stephen Curry",
-    position: "G",
-    pts: 26.4,
-    ast: 5.1,
-    reb: 4.5,
-    stl: 0.7,
-    blk: 0.4,
-    fg3_pct: 0.408,
-    fg3m: 4.8,
-  },
-  {
-    id: 203999,
-    name: "Nikola Jokic",
-    position: "C",
-    pts: 29.6,
-    ast: 10.2,
-    reb: 12.7,
-    stl: 1.8,
-    blk: 0.9,
-    fg3_pct: 0.359,
-    fg3m: 1.8,
-  },
-  {
-    id: 1628369,
-    name: "Jayson Tatum",
-    position: "F",
-    pts: 26.8,
-    ast: 6.0,
-    reb: 8.7,
-    stl: 1.1,
-    blk: 0.6,
-    fg3_pct: 0.376,
-    fg3m: 3.2,
-  },
-  {
-    id: 1630162,
-    name: "Anthony Edwards",
-    position: "G",
-    pts: 27.6,
-    ast: 4.5,
-    reb: 5.7,
-    stl: 1.3,
-    blk: 0.5,
-    fg3_pct: 0.357,
-    fg3m: 3.0,
-  },
-];
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
 
   const isLineupComplete = Object.values(lineup).every((player) => player !== null);
 
-  const addToLineup = (player) => {
-  const alreadyInLineup = Object.values(lineup).some(
-    (p) => p && p.id === player.id
-  );
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedSearch(searchValue);
+    }, 400);
 
-  if (alreadyInLineup) return;
+    return () => clearTimeout(timeout);
+  }, [searchValue]);
 
-  let slot = null;
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (debouncedSearch.length < 3) {
+        setSuggestions([]);
+        setIsSearching(false);
+        return;
+      }
 
-  if (player.position === "G") {
-    if (!lineup.PG) slot = "PG";
-    else if (!lineup.SG) slot = "SG";
-  } else if (player.position === "F") {
-    if (!lineup.SF) slot = "SF";
-    else if (!lineup.PF) slot = "PF";
-  } else if (player.position === "C") {
-    if (!lineup.C) slot = "C";
-  }
+      try {
+        setIsSearching(true);
 
-  if (!slot) return;
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/players?search=${encodeURIComponent(debouncedSearch)}`
+        );
 
-  setAnalysis(null);
-  setError("");
+        const data = await response.json();
 
-  setLineup((prev) => ({
-    ...prev,
-    [slot]: player,
-  }));
-};
+        if (!response.ok) {
+          setSuggestions([]);
+          return;
+        }
+
+        setSuggestions(data);
+      } catch (err) {
+        console.error("Suggestion search failed:", err);
+        setSuggestions([]);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    fetchSuggestions();
+  }, [debouncedSearch]);
+
+  const handleSelectPlayer = async (playerName) => {
+    try {
+      setError("");
+      setAnalysis(null);
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/player?name=${encodeURIComponent(playerName)}`
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Could not load player");
+        return;
+      }
+
+      setLineup((prev) => ({
+        ...prev,
+        [activeSlot]: data,
+      }));
+
+      setSearchValue("");
+      setDebouncedSearch("");
+      setSuggestions([]);
+    } catch (err) {
+      console.error("Player fetch failed:", err);
+      setError("Could not connect to backend");
+    }
+  };
 
   const removeFromLineup = (slot) => {
-  setAnalysis(null);
-  setError("");
+    setAnalysis(null);
+    setError("");
 
-  setLineup((prev) => ({
-    ...prev,
-    [slot]: null,
-  }));
-};
+    setLineup((prev) => ({
+      ...prev,
+      [slot]: null,
+    }));
+  };
+
+  const resetLineup = () => {
+    setLineup({
+      PG: null,
+      SG: null,
+      SF: null,
+      PF: null,
+      C: null,
+    });
+    setAnalysis(null);
+    setError("");
+    setSearchValue("");
+    setDebouncedSearch("");
+    setSuggestions([]);
+    setActiveSlot("PG");
+  };
 
   const analyzeLineup = async () => {
-  try {
-    setError("");
-    setAnalysis(null);
+    try {
+      setError("");
+      setAnalysis(null);
+      setIsAnalyzing(true);
 
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/analyze-lineup`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ lineup }),
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/analyze-lineup`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ lineup }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || `Server error: ${response.status}`);
+        return;
       }
-    );
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      setError(data.error || `Server error: ${response.status}`);
-      return;
+      setAnalysis(data);
+    } catch (err) {
+      console.error(err);
+      setError("Request failed before server response");
+    } finally {
+      setIsAnalyzing(false);
     }
-
-    setAnalysis(data);
-  } catch (err) {
-    console.error(err);
-    setError("Request failed before server response");
-  }
-};
+  };
 
   return (
     <section className="page-section">
       <h1>Lineup Builder</h1>
-      <p>Click players to build your lineup.</p>
+      <p>Click a slot, search any player, and build your lineup.</p>
 
       <div className="lineup-page">
         <div className="player-browser">
-          <h2>Players</h2>
+          <h2>Selected Position: {activeSlot}</h2>
 
-          <div className="player-grid">
-            {allPlayers.map((p) => (
-              <PlayerMiniCard
-                key={p.id}
-                player={p}
-                onClick={() => addToLineup(p)}
-              />
-            ))}
+          <div className="player-search">
+            <input
+              type="text"
+              placeholder={`Search player for ${activeSlot}...`}
+              value={searchValue}
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+                setError("");
+                setAnalysis(null);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && suggestions.length > 0) {
+                  handleSelectPlayer(suggestions[0].name);
+                }
+              }}
+            />
           </div>
+
+          {isSearching && <p>Searching players...</p>}
+
+          {suggestions.length > 0 && (
+            <div className="suggestions">
+              {suggestions.map((p) => (
+                <div
+                  key={p.id}
+                  className="suggestion-item"
+                  onClick={() => handleSelectPlayer(p.name)}
+                >
+                  {p.name}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="lineup">
-      <h2>Your Lineup</h2>
+          <h2>Your Lineup</h2>
 
-      {Object.entries(lineup).map(([slot, player]) => (
-        <div key={slot} className="lineup-slot">
-          <strong>{slot}</strong> {player ? `: ${player.name}` : ": Empty"}
+          {Object.entries(lineup).map(([slot, player]) => (
+            <div
+              key={slot}
+              className={`lineup-slot ${activeSlot === slot ? "slot-active" : ""}`}
+              onClick={() => setActiveSlot(slot)}
+            >
+              <strong>{slot}</strong> {player ? `: ${player.name}` : ": Empty"}
 
-          {player && (
-            <button onClick={() => removeFromLineup(slot)}>
-              Remove
+              {player && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeFromLineup(slot);
+                  }}
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          ))}
+
+          <button className="reset-btn" onClick={resetLineup}>
+            Reset Lineup
+          </button>
+
+          {isLineupComplete && (
+            <button className="analyze-btn" onClick={analyzeLineup}>
+              Analyze Lineup
             </button>
           )}
+
+          {isAnalyzing && <p>Analyzing lineup...</p>}
+          {error && <p>{error}</p>}
+
+          {analysis && (
+            <div className="analysis-panel">
+              <h3>Lineup Analysis</h3>
+
+              <div className="analysis-cards">
+                <div className="analysis-card">
+                  <span>Offense</span>
+                  <h2>{analysis.offense?.offense_score.toFixed(1)}</h2>
+                </div>
+
+                <div className="analysis-card">
+                  <span>Defense</span>
+                  <h2>{analysis.defense?.defense_score.toFixed(1)}</h2>
+                </div>
+
+                <div className="analysis-card highlight">
+                  <span>Overall</span>
+                  <h2>{analysis.overall?.overall_score.toFixed(1)}</h2>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      ))}
-
-      <button
-        className="reset-btn"
-        onClick={() => {
-          setLineup({
-            PG: null,
-            SG: null,
-            SF: null,
-            PF: null,
-            C: null,
-          });
-          setAnalysis(null);
-          setError("");
-        }}
-      >
-        Reset Lineup
-      </button>
-
-      {isLineupComplete && (
-        <button className="analyze-btn" onClick={analyzeLineup}>
-          Analyze Lineup
-        </button>
-      )}
-
-      {error && <p>{error}</p>}
-
-      {isLineupComplete && analysis && (
-        <div className="analysis-panel">
-          <h3>Lineup Analysis</h3>
-
-          <div className="analysis-cards">
-            <div className="analysis-card">
-              <span>Offense</span>
-              <h2>{analysis.offense?.offense_score.toFixed(1)}</h2>
-            </div>
-
-            <div className="analysis-card">
-              <span>Defense</span>
-              <h2>{analysis.defense?.defense_score.toFixed(1)}</h2>
-            </div>
-
-            <div className="analysis-card highlight">
-              <span>Overall</span>
-              <h2>{analysis.overall?.overall_score.toFixed(1)}</h2>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
       </div>
     </section>
   );
