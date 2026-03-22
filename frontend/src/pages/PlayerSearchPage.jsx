@@ -68,14 +68,17 @@ function PlayerSearchPage() {
   };
 
   const handlePlayerSearch = async () => {
-    fetchPlayer(playerName);
-  };
+  if (!playerName.trim()) return;
+  fetchPlayer(playerName);
+};
 
-  const handlePlayerInputChange = async (e) => {
+  const handlePlayerInputChange = (e) => {
   const value = e.target.value;
   setPlayerName(value);
   setPlayerData(null);
   setError("");
+  setSuggestions([]);
+};
 
   if (value.length < 3) {
     setSuggestions([]);
@@ -114,7 +117,8 @@ function PlayerSearchPage() {
         <button onClick={handlePlayerSearch}>Search</button>
       </div>
 
-      {suggestions.length > 0 && (
+        {/* Suggets playes as user searches */}
+      {/* {suggestions.length > 0 && (
         <div className="suggestions">
           {suggestions.map((p) => {
             const imageUrl = `https://cdn.nba.com/headshots/nba/latest/1040x760/${p.id}.png`;
@@ -142,7 +146,7 @@ function PlayerSearchPage() {
             );
           })}
         </div>
-      )}
+      )} */}
 
           {!playerData && (
       <div className="player-browser">
