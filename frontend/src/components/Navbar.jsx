@@ -24,7 +24,7 @@ function Navbar() {
         <div className="nav-item dropdown">
           <span>Lineup Builder</span>
           <div className="dropdown-menu">
-            <Link to="/lineups/analyze">Analyze Lineup</Link>
+            <Link to="/lineup-builder">Lineup Builder</Link>
             <Link to="/lineups/compare">Compare Lineups</Link>
           </div>
         </div>

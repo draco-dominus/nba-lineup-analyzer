@@ -524,7 +524,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/players/search" element={<PlayerSearchPage />} />
             <Route path="/players/compare" element={<ComparePlayersPage />} />
-            <Route path="/lineups/analyze" element={<LineupBuilderPage />} />
+            <Route path="/lineup-builder" element={<LineupBuilderPage />} />
             <Route path="/lineups/compare" element={<CompareLineupsPage />} />
             <Route path="/roster/build" element={<RosterBuilderPage />} />
             <Route path="/roster/simulate" element={<MinutesSimulationPage />} />
