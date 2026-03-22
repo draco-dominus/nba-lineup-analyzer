@@ -1,28 +1,75 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function HomePage() {
+  const navigate = useNavigate();
+
   return (
-    <div className="page-section">
-      <h1>NBA Lineup Analyzer</h1>
-      <p>
-        Build lineups, compare players, and analyze team fit using advanced
-        basketball analytics.
-      </p>
+    <section className="home">
+      <div className="home-hero">
+        <p className="home-eyebrow">NBA lineup tools, reimagined</p>
 
-      <div style={{ marginTop: "30px", display: "flex", gap: "20px" }}>
-        <Link to="/players/search">
-          <button>Browse Players</button>
-        </Link>
+        <h1>Build, compare, and explore NBA lineups</h1>
 
-        <Link to="/lineups/analyze">
-          <button>Analyze Lineup</button>
-        </Link>
+        <p className="home-subtext">
+          Discover players, create 5-man combinations, compare lineups, and test
+          roster ideas in one place.
+        </p>
 
-        <Link to="/lineups/compare">
-          <button>Compare Lineups</button>
-        </Link>
+        <div className="home-actions">
+          <button
+            className="primary-btn"
+            onClick={() => navigate("/lineup-builder")}
+          >
+            Build Lineup
+          </button>
+
+          <button onClick={() => navigate("/players/search")}>
+            Browse Players
+          </button>
+
+          <button onClick={() => navigate("/lineups/compare")}>
+            Compare Lineups
+          </button>
+
+          <button onClick={() => navigate("/roster/build")}>
+            Roster Builder
+          </button>
+        </div>
       </div>
-    </div>
+
+      <div className="home-features">
+        <div className="feature-card">
+          <h3>Build Lineups</h3>
+          <p>
+            Create 5-man groups by position and experiment with different
+            player combinations.
+          </p>
+        </div>
+
+        <div className="feature-card">
+          <h3>Browse Players</h3>
+          <p>
+            Search players, view stats, and explore standout names across the
+            league.
+          </p>
+        </div>
+
+        <div className="feature-card">
+          <h3>Compare Lineups</h3>
+          <p>
+            Put two lineups side by side and see where one group has the edge.
+          </p>
+        </div>
+
+        <div className="feature-card">
+          <h3>Build Rosters</h3>
+          <p>
+            Test roster ideas and think through how different pieces fit
+            together.
+          </p>
+        </div>
+      </div>
+    </section>
   );
 }
 
