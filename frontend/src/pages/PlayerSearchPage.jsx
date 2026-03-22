@@ -80,23 +80,6 @@ function PlayerSearchPage() {
   setSuggestions([]);
 };
 
-  if (value.length < 3) {
-    setSuggestions([]);
-    return;
-  }
-
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/players?search=${encodeURIComponent(value)}`
-    );
-
-    const data = await response.json();
-    setSuggestions(data);
-  } catch {
-    setSuggestions([]);
-  }
-};
-
   return (
     <section className="page-section">
       <h1>Browse/Search Players</h1>
@@ -153,26 +136,25 @@ function PlayerSearchPage() {
         <h3>Top Players</h3>
 
         <div className="player-list">
-          {allPlayers.map((p) => {
-            const imageUrl = `https://cdn.nba.com/headshots/nba/latest/1040x760/${p.id}.png`;
+          {allPlayers.map((p) => (
+            <div
+              key={p.id}
+              className="player-card-mini"
+              onClick={() => fetchPlayer(p.name)}
+            >
+              <img
+                src={`https://cdn.nba.com/headshots/nba/latest/1040x760/${p.id}.png`}
+                alt={p.name}
+              />
 
-            return (
-              <div
-                key={p.id}
-                className="player-card-mini"
-                onClick={() => fetchPlayer(p.name)}
-              >
-                <img src={imageUrl} alt={p.name} />
-
-                <div className="player-mini-info">
-                  <div className="player-mini-name">{p.name}</div>
-                  <div className="player-mini-meta">
-                    {p.team} • {p.position}
-                  </div>
+              <div className="player-mini-info">
+                <div className="player-mini-name">{p.name}</div>
+                <div className="player-mini-meta">
+                  {p.team} • {p.position}
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
     )}
@@ -199,5 +181,4 @@ function PlayerSearchPage() {
     </section>
   );
 }
-
 export default PlayerSearchPage;
