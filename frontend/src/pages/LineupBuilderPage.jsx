@@ -79,38 +79,44 @@ function LineupBuilderPage() {
   const isLineupComplete = Object.values(lineup).every((player) => player !== null);
 
   const addToLineup = (player) => {
-    const alreadyInLineup = Object.values(lineup).some(
-      (p) => p && p.id === player.id
-    );
+  const alreadyInLineup = Object.values(lineup).some(
+    (p) => p && p.id === player.id
+  );
 
-    if (alreadyInLineup) return;
+  if (alreadyInLineup) return;
 
-    let slot = null;
+  let slot = null;
 
-    if (player.position === "G") {
-      if (!lineup.PG) slot = "PG";
-      else if (!lineup.SG) slot = "SG";
-    } else if (player.position === "F") {
-      if (!lineup.SF) slot = "SF";
-      else if (!lineup.PF) slot = "PF";
-    } else if (player.position === "C") {
-      if (!lineup.C) slot = "C";
-    }
+  if (player.position === "G") {
+    if (!lineup.PG) slot = "PG";
+    else if (!lineup.SG) slot = "SG";
+  } else if (player.position === "F") {
+    if (!lineup.SF) slot = "SF";
+    else if (!lineup.PF) slot = "PF";
+  } else if (player.position === "C") {
+    if (!lineup.C) slot = "C";
+  }
 
-    if (!slot) return;
+  if (!slot) return;
 
-    setLineup((prev) => ({
-      ...prev,
-      [slot]: player,
-    }));
-  };
+  setAnalysis(null);
+  setError("");
+
+  setLineup((prev) => ({
+    ...prev,
+    [slot]: player,
+  }));
+};
 
   const removeFromLineup = (slot) => {
-    setLineup((prev) => ({
-      ...prev,
-      [slot]: null,
-    }));
-  };
+  setAnalysis(null);
+  setError("");
+
+  setLineup((prev) => ({
+    ...prev,
+    [slot]: null,
+  }));
+};
 
   const analyzeLineup = async () => {
   try {
@@ -179,15 +185,17 @@ function LineupBuilderPage() {
 
       <button
         className="reset-btn"
-        onClick={() =>
+        onClick={() => {
           setLineup({
             PG: null,
             SG: null,
             SF: null,
             PF: null,
             C: null,
-          })
-        }
+          });
+          setAnalysis(null);
+          setError("");
+        }}
       >
         Reset Lineup
       </button>
