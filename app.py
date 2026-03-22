@@ -56,8 +56,15 @@ def get_all_players():
     players_list = get_all_active_players()
     return jsonify(players_list)
 
+from flask import jsonify
+
+@app.route("/health", methods=["GET"])
+def health_check():
+    return jsonify({"status": "ok"})
+
 import os
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
