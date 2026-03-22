@@ -14,62 +14,67 @@ function LineupBuilderPage() {
   const [error, setError] = useState("");
 
   const allPlayers = [
-    {
-      id: 2544,
-      name: "LeBron James",
-      position: "F",
-      pts: 25.3,
-      ast: 8.3,
-      reb: 7.1,
-      stl: 1.2,
-      blk: 0.6,
-      fg3_pct: 0.387,
-    },
-    {
-      id: 201939,
-      name: "Stephen Curry",
-      position: "G",
-      pts: 26.4,
-      ast: 5.1,
-      reb: 4.5,
-      stl: 0.7,
-      blk: 0.4,
-      fg3_pct: 0.408,
-    },
-    {
-      id: 203999,
-      name: "Nikola Jokic",
-      position: "C",
-      pts: 29.6,
-      ast: 10.2,
-      reb: 12.7,
-      stl: 1.8,
-      blk: 0.9,
-      fg3_pct: 0.359,
-    },
-    {
-      id: 1628369,
-      name: "Jayson Tatum",
-      position: "F",
-      pts: 26.8,
-      ast: 6.0,
-      reb: 8.7,
-      stl: 1.1,
-      blk: 0.6,
-      fg3_pct: 0.376,
-    },
-    {
-      id: 1630162,
-      name: "Anthony Edwards",
-      position: "G",
-      pts: 27.6,
-      ast: 4.5,
-      reb: 5.7,
-      stl: 1.3,
-      blk: 0.5,
-      fg3_pct: 0.357,
-    },
-  ];
+  {
+    id: 2544,
+    name: "LeBron James",
+    position: "F",
+    pts: 25.3,
+    ast: 8.3,
+    reb: 7.1,
+    stl: 1.2,
+    blk: 0.6,
+    fg3_pct: 0.387,
+    fg3m: 2.1,
+  },
+  {
+    id: 201939,
+    name: "Stephen Curry",
+    position: "G",
+    pts: 26.4,
+    ast: 5.1,
+    reb: 4.5,
+    stl: 0.7,
+    blk: 0.4,
+    fg3_pct: 0.408,
+    fg3m: 4.8,
+  },
+  {
+    id: 203999,
+    name: "Nikola Jokic",
+    position: "C",
+    pts: 29.6,
+    ast: 10.2,
+    reb: 12.7,
+    stl: 1.8,
+    blk: 0.9,
+    fg3_pct: 0.359,
+    fg3m: 1.8,
+  },
+  {
+    id: 1628369,
+    name: "Jayson Tatum",
+    position: "F",
+    pts: 26.8,
+    ast: 6.0,
+    reb: 8.7,
+    stl: 1.1,
+    blk: 0.6,
+    fg3_pct: 0.376,
+    fg3m: 3.2,
+  },
+  {
+    id: 1630162,
+    name: "Anthony Edwards",
+    position: "G",
+    pts: 27.6,
+    ast: 4.5,
+    reb: 5.7,
+    stl: 1.3,
+    blk: 0.5,
+    fg3_pct: 0.357,
+    fg3m: 3.0,
+  },
+];
 
   const isLineupComplete = Object.values(lineup).every((player) => player !== null);
 
@@ -158,37 +163,66 @@ function LineupBuilderPage() {
         </div>
 
         <div className="lineup">
-          <h2>Your Lineup</h2>
+      <h2>Your Lineup</h2>
 
-          {Object.entries(lineup).map(([slot, player]) => (
-            <div key={slot} className="lineup-slot">
-              <strong>{slot}</strong>: {player ? player.name : "Empty"}
+      {Object.entries(lineup).map(([slot, player]) => (
+        <div key={slot} className="lineup-slot">
+          <strong>{slot}</strong> {player ? `: ${player.name}` : ": Empty"}
 
-              {player && (
-                <button onClick={() => removeFromLineup(slot)}>
-                  Remove
-                </button>
-              )}
-            </div>
-          ))}
-
-          {isLineupComplete && (
-            <button onClick={analyzeLineup}>
-              Analyze Lineup
+          {player && (
+            <button onClick={() => removeFromLineup(slot)}>
+              Remove
             </button>
           )}
-
-          {error && <p>{error}</p>}
-
-          {analysis && (
-            <div>
-              <h3>Analysis</h3>
-              <p>Offense: {analysis.offense?.offense_score}</p>
-              <p>Defense: {analysis.defense?.defense_score}</p>
-              <p>Overall: {analysis.overall?.overall_score}</p>
-            </div>
-          )}
         </div>
+      ))}
+
+      <button
+        className="reset-btn"
+        onClick={() =>
+          setLineup({
+            PG: null,
+            SG: null,
+            SF: null,
+            PF: null,
+            C: null,
+          })
+        }
+      >
+        Reset Lineup
+      </button>
+
+      {isLineupComplete && (
+        <button className="analyze-btn" onClick={analyzeLineup}>
+          Analyze Lineup
+        </button>
+      )}
+
+      {error && <p>{error}</p>}
+
+      {isLineupComplete && analysis && (
+        <div className="analysis-panel">
+          <h3>Lineup Analysis</h3>
+
+          <div className="analysis-cards">
+            <div className="analysis-card">
+              <span>Offense</span>
+              <h2>{analysis.offense?.offense_score.toFixed(1)}</h2>
+            </div>
+
+            <div className="analysis-card">
+              <span>Defense</span>
+              <h2>{analysis.defense?.defense_score.toFixed(1)}</h2>
+            </div>
+
+            <div className="analysis-card highlight">
+              <span>Overall</span>
+              <h2>{analysis.overall?.overall_score.toFixed(1)}</h2>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
       </div>
     </section>
   );
