@@ -7,25 +7,25 @@ function PlayerSearchPage() {
   const [error, setError] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [allPlayers, setAllPlayers] = useState([]);
+  const [isLoadingPlayers, setIsLoadingPlayers] = useState(false);
 
   useEffect(() => {
   const fetchAllPlayers = async () => {
     try {
-      console.log("API URL:", import.meta.env.VITE_API_URL);
+      setIsLoadingPlayers(true);
 
       const response = await fetch(`${import.meta.env.VITE_API_URL}/players/all`);
-      console.log("players/all status:", response.status);
 
       if (!response.ok) {
         throw new Error(`players/all failed with status ${response.status}`);
       }
 
       const data = await response.json();
-      console.log("players/all data:", data);
-
       setAllPlayers(data);
     } catch (err) {
       console.error("Failed to load players:", err);
+    } finally {
+      setIsLoadingPlayers(false);
     }
   };
 
@@ -136,7 +136,11 @@ function PlayerSearchPage() {
         <h3>Top Players</h3>
 
         <div className="player-list">
-          {allPlayers.map((p) => (
+
+        {isLoadingPlayers && <p>Loading top players...</p>}
+
+        {!isLoadingPlayers &&
+          allPlayers.map((p) => (
             <div
               key={p.id}
               className="player-card-mini"
