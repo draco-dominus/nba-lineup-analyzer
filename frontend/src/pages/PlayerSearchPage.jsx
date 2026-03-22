@@ -72,25 +72,27 @@ function PlayerSearchPage() {
   };
 
   const handlePlayerInputChange = async (e) => {
-    const value = e.target.value;
-    setPlayerName(value);
+  const value = e.target.value;
+  setPlayerName(value);
+  setPlayerData(null);
+  setError("");
 
-    if (value.length < 3) {
-      setSuggestions([]);
-      return;
-    }
+  if (value.length < 3) {
+    setSuggestions([]);
+    return;
+  }
 
-    try {
-      const response = await fetch(
-        `import.meta.env.VITE_API_URL/players?search=${encodeURIComponent(value)}`
-      );
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/players?search=${encodeURIComponent(value)}`
+    );
 
-      const data = await response.json();
-      setSuggestions(data);
-    } catch {
-      setSuggestions([]);
-    }
-  };
+    const data = await response.json();
+    setSuggestions(data);
+  } catch {
+    setSuggestions([]);
+  }
+};
 
   return (
     <section className="page-section">
@@ -103,6 +105,11 @@ function PlayerSearchPage() {
           placeholder="Enter player name..."
           value={playerName}
           onChange={handlePlayerInputChange}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handlePlayerSearch();
+            }
+          }}
         />
         <button onClick={handlePlayerSearch}>Search</button>
       </div>
@@ -137,36 +144,52 @@ function PlayerSearchPage() {
         </div>
       )}
 
+          {!playerData && (
       <div className="player-browser">
-  <h3>Top Players</h3>
+        <h3>Top Players</h3>
 
         <div className="player-list">
-            {allPlayers.slice(0, 50).map((p) => {
+          {allPlayers.map((p) => {
             const imageUrl = `https://cdn.nba.com/headshots/nba/latest/1040x760/${p.id}.png`;
 
             return (
-                <div
+              <div
                 key={p.id}
                 className="player-card-mini"
                 onClick={() => fetchPlayer(p.name)}
-                >
+              >
                 <img src={imageUrl} alt={p.name} />
 
                 <div className="player-mini-info">
-                    <div className="player-mini-name">{p.name}</div>
-                    <div className="player-mini-meta">
-                    {p.position ? `${p.team} • ${p.position}` : p.team}
-                    </div>
+                  <div className="player-mini-name">{p.name}</div>
+                  <div className="player-mini-meta">
+                    {p.team} • {p.position}
+                  </div>
                 </div>
-                </div>
+              </div>
             );
-            })}
+          })}
         </div>
-        </div>
+      </div>
+    )}
+
+    {playerData && (
+    <button
+      className="back-button"
+      onClick={() => {
+        setPlayerData(null);
+        setPlayerName("");
+        setError("");
+        setSuggestions([]);
+      }}
+    >
+      Back to Top Players
+    </button>
+  )}
 
       <div className="player-results">
         {error && <p>{error}</p>}
-        {!error && !playerData && <p>No player selected.</p>}
+        {!error && !playerData && playerName.length === 0 && <p>No player selected.</p>}
         {playerData && <NBACard player={playerData} />}
       </div>
     </section>
