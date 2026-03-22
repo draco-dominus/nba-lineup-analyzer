@@ -508,7 +508,7 @@ import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import PlayerSearchPage from "./pages/PlayerSearchPage";
 import ComparePlayersPage from "./pages/ComparePlayersPage";
-import LineupAnalyzePage from "./pages/LineupBuilderPage";
+import LineupBuilderPage from "./pages/LineupBuilderPage";
 import CompareLineupsPage from "./pages/CompareLineupsPage";
 import RosterBuilderPage from "./pages/RosterBuilderPage";
 import MinutesSimulationPage from "./pages/MinutesSimulationPage";
@@ -524,7 +524,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/players/search" element={<PlayerSearchPage />} />
             <Route path="/players/compare" element={<ComparePlayersPage />} />
-            <Route path="/lineups/analyze" element={<LineupAnalyzePage />} />
+            <Route path="/lineups/analyze" element={<LineupBuilderPage />} />
             <Route path="/lineups/compare" element={<CompareLineupsPage />} />
             <Route path="/roster/build" element={<RosterBuilderPage />} />
             <Route path="/roster/simulate" element={<MinutesSimulationPage />} />
