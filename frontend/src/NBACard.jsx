@@ -50,3 +50,5 @@ function PlayerCard({ player, onClick }) {
     </div>
   );
 }
+
+export default PlayerCard;
