@@ -111,6 +111,7 @@ body {
   background: #10141d;
   border: 1px solid #2a3140;
   padding: 24px;
+  cursor: pointer;
 }
 
 .player-card-header {
