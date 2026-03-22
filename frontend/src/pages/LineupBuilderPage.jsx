@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PlayerCard from "../NBACard";
+import PlayerMiniCard from "../components/PlayerMiniCard";
 
 function LineupBuilderPage() {
   const [lineup, setLineup] = useState({
@@ -147,13 +147,15 @@ function LineupBuilderPage() {
         <div className="player-browser">
           <h2>Players</h2>
 
-          {allPlayers.map((p) => (
-            <PlayerCard
-              key={p.id}
-              player={p}
-              onClick={() => addToLineup(p)}
-            />
-          ))}
+          <div className="player-grid">
+            {allPlayers.map((p) => (
+              <PlayerMiniCard
+                key={p.id}
+                player={p}
+                onClick={() => addToLineup(p)}
+              />
+            ))}
+          </div>
         </div>
 
         <div className="lineup">
