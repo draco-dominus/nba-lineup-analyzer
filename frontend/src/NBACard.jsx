@@ -1,8 +1,8 @@
-function PlayerCard({ player }) {
+function PlayerCard({ player, onClick }) {
   const imageUrl = `https://cdn.nba.com/headshots/nba/latest/1040x760/${player.id}.png`;
 
   return (
-    <div className="player-card">
+    <div className="player-card" onClick={onClick}>
       <img
         src={imageUrl}
         alt={player.name}
@@ -50,5 +50,3 @@ function PlayerCard({ player }) {
     </div>
   );
 }
-
-export default PlayerCard;

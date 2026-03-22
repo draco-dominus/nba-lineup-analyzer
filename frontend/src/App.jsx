@@ -508,7 +508,7 @@ import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import PlayerSearchPage from "./pages/PlayerSearchPage";
 import ComparePlayersPage from "./pages/ComparePlayersPage";
-import LineupAnalyzePage from "./pages/LineupAnalyzePage";
+import LineupAnalyzePage from "./pages/LineupBuilderPage";
 import CompareLineupsPage from "./pages/CompareLineupsPage";
 import RosterBuilderPage from "./pages/RosterBuilderPage";
 import MinutesSimulationPage from "./pages/MinutesSimulationPage";
