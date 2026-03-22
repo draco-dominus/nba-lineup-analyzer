@@ -108,33 +108,34 @@ function LineupBuilderPage() {
   };
 
   const analyzeLineup = async () => {
-    try {
-      setError("");
-      setAnalysis(null);
+  try {
+    setError("");
+    setAnalysis(null);
 
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/analyze-lineup`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ lineup }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || "Something went wrong");
-        return;
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/analyze-lineup`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ lineup }),
       }
+    );
 
-      setAnalysis(data);
-    } catch {
-      setError("Could not connect to backend");
+    const data = await response.json();
+
+    if (!response.ok) {
+      setError(data.error || `Server error: ${response.status}`);
+      return;
     }
-  };
+
+    setAnalysis(data);
+  } catch (err) {
+    console.error(err);
+    setError("Request failed before server response");
+  }
+};
 
   return (
     <section className="page-section">

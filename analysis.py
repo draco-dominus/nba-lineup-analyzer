@@ -84,7 +84,7 @@ def analyze_strengths_weaknesses(lineup):
     spacing_shooters = 0
 
     for player in lineup.values():
-        if player["fg3_pct"] >= 0.35 and player["fg3m"] >= 1.5:
+        if player.get("fg3_pct", 0) >= 0.35 and player.get("fg3m", 0) >= 1.5:
             spacing_shooters += 1
 
     if spacing_shooters >= 4:
