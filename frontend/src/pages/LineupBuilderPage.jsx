@@ -112,8 +112,6 @@ function LineupBuilderPage() {
       setError("");
       setAnalysis(null);
 
-      const lineupArray = Object.values(lineup);
-
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/analyze-lineup`,
         {
@@ -121,7 +119,7 @@ function LineupBuilderPage() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ lineup: lineupArray }),
+          body: JSON.stringify({ lineup }),
         }
       );
 
