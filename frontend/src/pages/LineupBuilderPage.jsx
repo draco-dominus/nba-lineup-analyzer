@@ -152,112 +152,139 @@ function LineupBuilderPage() {
   };
 
   return (
-    <section className="page-section">
-      <h1>Lineup Builder</h1>
-      <p>Click a slot, search any player, and build your lineup.</p>
+  <section className="page-section">
+    <h1>Lineup Builder</h1>
+    <p>Click a slot, search any player, and build your lineup.</p>
 
-      <div className="lineup-page">
-        <div className="player-browser">
-          <h2>Selected Position: {activeSlot}</h2>
+    <div className="starting-lineup-board">
+      <div className="starting-lineup-header">Starting Lineup</div>
 
-          <div className="player-search">
-            <input
-              type="text"
-              placeholder={`Search player for ${activeSlot}...`}
-              value={searchValue}
-              onChange={(e) => {
-                setSearchValue(e.target.value);
-                setError("");
-                setAnalysis(null);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && suggestions.length > 0) {
-                  handleSelectPlayer(suggestions[0].name);
-                }
-              }}
-            />
-          </div>
+      <div className="starting-lineup-grid">
+        {Object.entries(lineup).map(([slot, player]) => {
+          const imageUrl = player
+            ? `https://cdn.nba.com/headshots/nba/latest/1040x760/${player.id}.png`
+            : null;
 
-          {isSearching && <p>Searching players...</p>}
-
-          {suggestions.length > 0 && (
-            <div className="suggestions">
-              {suggestions.map((p) => (
-                <div
-                  key={p.id}
-                  className="suggestion-item"
-                  onClick={() => handleSelectPlayer(p.name)}
-                >
-                  {p.name}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="lineup">
-          <h2>Your Lineup</h2>
-
-          {Object.entries(lineup).map(([slot, player]) => (
+          return (
             <div
               key={slot}
-              className={`lineup-slot ${activeSlot === slot ? "slot-active" : ""}`}
+              className={`lineup-player-card ${activeSlot === slot ? "lineup-player-card-active" : ""}`}
               onClick={() => setActiveSlot(slot)}
             >
-              <strong>{slot}</strong> {player ? `: ${player.name}` : ": Empty"}
+              <div className="lineup-player-position">{slot}</div>
 
-              {player && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeFromLineup(slot);
-                  }}
-                >
-                  Remove
-                </button>
-              )}
-            </div>
-          ))}
+              <div className="lineup-player-image-wrap">
+                {player ? (
+                  <img
+                    src={imageUrl}
+                    alt={player.name}
+                    className="lineup-player-image"
+                  />
+                ) : (
+                  <div className="lineup-player-placeholder">Select {slot}</div>
+                )}
+              </div>
 
-          <button className="reset-btn" onClick={resetLineup}>
-            Reset Lineup
-          </button>
-
-          {isLineupComplete && (
-            <button className="analyze-btn" onClick={analyzeLineup}>
-              Analyze Lineup
-            </button>
-          )}
-
-          {isAnalyzing && <p>Analyzing lineup...</p>}
-          {error && <p>{error}</p>}
-
-          {analysis && (
-            <div className="analysis-panel">
-              <h3>Lineup Analysis</h3>
-
-              <div className="analysis-cards">
-                <div className="analysis-card">
-                  <span>Offense</span>
-                  <h2>{analysis.offense?.offense_score.toFixed(1)}</h2>
+              <div className="lineup-player-footer">
+                <div className="lineup-player-name">
+                  {player ? player.name : "Empty Slot"}
                 </div>
 
-                <div className="analysis-card">
-                  <span>Defense</span>
-                  <h2>{analysis.defense?.defense_score.toFixed(1)}</h2>
-                </div>
-
-                <div className="analysis-card highlight">
-                  <span>Overall</span>
-                  <h2>{analysis.overall?.overall_score.toFixed(1)}</h2>
-                </div>
+                {player && (
+                  <button
+                    className="lineup-remove-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeFromLineup(slot);
+                    }}
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
             </div>
-          )}
-        </div>
+          );
+        })}
       </div>
-    </section>
-  );
+    </div>
+
+    <div className="lineup-builder-controls">
+      <h2>Selected Position: {activeSlot}</h2>
+
+      <div className="player-search">
+        <input
+          type="text"
+          placeholder={`Search player for ${activeSlot}...`}
+          value={searchValue}
+          onChange={(e) => {
+            setSearchValue(e.target.value);
+            setError("");
+            setAnalysis(null);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && suggestions.length > 0) {
+              handleSelectPlayer(suggestions[0].name);
+            }
+          }}
+        />
+      </div>
+
+      {isSearching && <p>Searching players...</p>}
+
+      {suggestions.length > 0 && (
+        <div className="suggestions">
+          {suggestions.map((p) => (
+            <div
+              key={p.id}
+              className="suggestion-item"
+              onClick={() => handleSelectPlayer(p.name)}
+            >
+              {p.name}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="lineup-builder-actions">
+        <button className="reset-btn" onClick={resetLineup}>
+          Reset Lineup
+        </button>
+
+        {isLineupComplete && (
+          <button className="analyze-btn" onClick={analyzeLineup}>
+            Analyze Lineup
+          </button>
+        )}
+      </div>
+
+      {isAnalyzing && <p className="analysis-loading">Analyzing lineup...</p>}
+      {error && <p className="lineup-error">{error}</p>}
+
+      {analysis && (
+        <div className="analysis-panel">
+          <h3>Lineup Analysis</h3>
+
+          <div className="analysis-cards">
+            <div className="analysis-card">
+              <span>Offense</span>
+              <h2>{analysis.offense?.offense_score.toFixed(1)}</h2>
+            </div>
+
+            <div className="analysis-card">
+              <span>Defense</span>
+              <h2>{analysis.defense?.defense_score.toFixed(1)}</h2>
+            </div>
+
+            <div className="analysis-card highlight">
+              <span>Overall</span>
+              <h2>{analysis.overall?.overall_score.toFixed(1)}</h2>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+);
 }
 
 export default LineupBuilderPage;

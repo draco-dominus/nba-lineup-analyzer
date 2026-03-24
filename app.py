@@ -28,6 +28,16 @@ def get_player():
 
     return jsonify(player)
 
+@app.route("/players", methods=["GET"])
+def get_players():
+    search = request.args.get("search", "").strip()
+
+    if not search:
+        return jsonify([])
+
+    players = search_players(search)
+    return jsonify(players)
+
 @app.route("/players/all", methods=["GET"])
 def get_all_players_route():
     players_list = get_top_players(limit=50)
