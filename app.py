@@ -2,9 +2,17 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from api import search_player, search_players, get_top_players
 from analysis import analyze_lineup, compare_lineups
+import os
 
 app = Flask(__name__)
-CORS(app)
+
+CORS(
+    app,
+    resources={r"/*": {"origins": [
+        "http://localhost:5173",
+        "https://nba-lineup-analyzer.vercel.app"
+    ]}}
+)
 
 @app.route("/player", methods=["GET"])
 def get_player():
@@ -50,21 +58,10 @@ def compare_lineups_route():
     result = compare_lineups(lineup_a, lineup_b)
     return jsonify(result)
 
-
-@app.route("/players/all", methods=["GET"])
-def get_all_players():
-    players_list = get_all_active_players()
-    return jsonify(players_list)
-
-from flask import jsonify
-
 @app.route("/health", methods=["GET"])
 def health_check():
     return jsonify({"status": "ok"})
 
-import os
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
-
